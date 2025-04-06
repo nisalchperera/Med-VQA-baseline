@@ -5,9 +5,14 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 from transformers import AutoTokenizer
+import gdown
 import json
 
 from model import MedVQA
+
+
+def download(file_id, output_path):
+    gdown.download(f"https://drive.google.com/uc?id={file_id}", output_path, quiet=False)
 
 # Model loading with caching
 @st.cache_resource
@@ -21,6 +26,12 @@ def load_model():
 # Load label mappings
 with open('./label2ans.json') as f:
     label2ans = json.load(f)
+
+# Downloading Models
+# https://drive.google.com/file/d/1-eqG2ULS-zTTOsgTScbFJYzhhnCQAYnh/view?usp=sharing
+if not os.path.exists("models/medvqa_epoch_10.pth"):
+    os.makedirs("models", exist_ok=True)
+    download("1-eqG2ULS-zTTOsgTScbFJYzhhnCQAYnh", "./models/medvqa_epoch_10.pth")
 
 # Initialize components
 model, device = load_model()
