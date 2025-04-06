@@ -1,12 +1,17 @@
 import os
 
+os.environ['HF_HOME'] = os.path.join(os.getcwd(), "models")
+os.makedirs(os.environ['HF_HOME'], exist_ok=True)
+
 import streamlit as st
 import torch
 import torchvision.transforms as transforms
-from PIL import Image
-from transformers import AutoTokenizer
 import gdown
 import json
+
+from PIL import Image
+from transformers import AutoTokenizer
+from huggingface_hub import hf_hub_download
 
 from model import MedVQA
 
