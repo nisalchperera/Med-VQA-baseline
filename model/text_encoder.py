@@ -2,6 +2,14 @@ import torch
 import torch.nn as nn
 from transformers import AutoModel
 
+# Clear transformers cache manually
+import shutil
+import os
+
+transformers_cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "huggingface", "transformers")
+if os.path.exists(transformers_cache_dir):
+    shutil.rmtree(transformers_cache_dir)
+
 # Text Encoder (PubMedBERT)
 class TextEncoder(nn.Module):
     def __init__(self, model_name="microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract", feat_dim=512):

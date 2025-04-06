@@ -10,6 +10,13 @@ import json
 
 from model import MedVQA
 
+# Clear transformers cache manually
+import shutil
+import os
+
+transformers_cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "huggingface", "transformers")
+if os.path.exists(transformers_cache_dir):
+    shutil.rmtree(transformers_cache_dir)
 
 def download(file_id, output_path):
     gdown.download(f"https://drive.google.com/uc?id={file_id}", output_path, quiet=False)
