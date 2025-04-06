@@ -138,7 +138,7 @@ if __name__ == "__main__":
     from transformers import T5Tokenizer, AutoTokenizer
     import json
 
-    text_tokenizer = AutoTokenizer.from_pretrained("microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract")
+    text_tokenizer = AutoTokenizer.from_pretrained("microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract")
     
     # Define paths
     DATASET_PATH = "./data/vqa"

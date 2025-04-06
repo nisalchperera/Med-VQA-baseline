@@ -12,7 +12,7 @@ if os.path.exists(transformers_cache_dir):
 
 # Text Encoder (PubMedBERT)
 class TextEncoder(nn.Module):
-    def __init__(self, model_name="microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract", feat_dim=512):
+    def __init__(self, model_name="microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract", feat_dim=512):
         super(TextEncoder, self).__init__()
         self.bert = AutoModel.from_pretrained(model_name)
         self.text_feat = nn.Sequential(

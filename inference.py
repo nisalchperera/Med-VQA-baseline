@@ -31,7 +31,7 @@ def preprocess_image(image_path):
     return transform(image).unsqueeze(0).to(device)  # Add batch dimension
 
 # Text preprocessing (PubMedBERT tokenizer)
-tokenizer = AutoTokenizer.from_pretrained("microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract")
+tokenizer = AutoTokenizer.from_pretrained("microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract")
 
 def preprocess_question(question):
     inputs = tokenizer(question, return_tensors="pt", padding=True, truncation=True, max_length=512)

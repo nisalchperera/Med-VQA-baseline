@@ -102,7 +102,7 @@ if __name__ == '__main__':
         transforms.Normalize(mean=[0.5], std=[0.5])
     ])
     # Initialize dataset with ans2label passed
-    text_tokenizer = AutoTokenizer.from_pretrained("microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract")
+    text_tokenizer = AutoTokenizer.from_pretrained("microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract")
   # Replace with actual PubMedBERT tokenizer
     dataset = MedVQADataset(annotations, IMAGE_PATH, text_tokenizer, ans2label, transforms)
 

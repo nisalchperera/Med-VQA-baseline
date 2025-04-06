@@ -47,7 +47,7 @@ if not os.path.exists("models/medvqa_epoch_10.pth"):
 
 # Initialize components
 model, device = load_model()
-tokenizer = AutoTokenizer.from_pretrained("microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract")
+tokenizer = AutoTokenizer.from_pretrained("microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract")
 
 def preprocess_question(question):
     inputs = tokenizer(question, return_tensors="pt", padding=True, truncation=True, max_length=512)
