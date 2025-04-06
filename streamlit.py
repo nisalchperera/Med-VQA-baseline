@@ -23,6 +23,7 @@ transformers_cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "huggin
 if os.path.exists(transformers_cache_dir):
     shutil.rmtree(transformers_cache_dir)
 
+@st.cache_data
 def download(file_id, output_path):
     gdown.download(f"https://drive.google.com/uc?id={file_id}", output_path, quiet=False)
 
@@ -40,6 +41,7 @@ with open('./label2ans.json') as f:
     label2ans = json.load(f)
 
 # Downloading Models
+# https://drive.google.com/file/d/1-eqG2ULS-zTTOsgTScbFJYzhhnCQAYnh/view?usp=sharing
 # https://drive.google.com/file/d/1-eqG2ULS-zTTOsgTScbFJYzhhnCQAYnh/view?usp=sharing
 if not os.path.exists("models/medvqa_epoch_10.pth"):
     os.makedirs("models", exist_ok=True)
