@@ -24,7 +24,7 @@ if os.path.exists(transformers_cache_dir):
     shutil.rmtree(transformers_cache_dir)
 
 def download_from_huggingface(repo_id):
-    snapshot_download(repo_id=repo_id, cache_dir=os.environ['HF_HOME'], repo_type="model", force_download=True)
+    snapshot_download(repo_id=repo_id, cache_dir=os.environ['HF_HOME'], repo_type="model", force_download=True, token=st.secrets["TOKEN"])
 
 def download(file_id, output_path):
     gdown.download(f"https://drive.google.com/uc?id={file_id}", output_path, quiet=False)
