@@ -4,6 +4,13 @@ os.environ['HF_HOME'] = os.path.join(os.getcwd(), "models")
 os.makedirs(os.environ['HF_HOME'], exist_ok=True)
 
 import streamlit as st
+
+# Retrieve Hugging Face token from secrets
+hf_token = st.secrets["secrets"]["TOKEN"]
+
+# Set the token as an environment variable (if needed)
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
+
 import torch
 import torchvision.transforms as transforms
 import gdown
@@ -24,7 +31,7 @@ if os.path.exists(transformers_cache_dir):
     shutil.rmtree(transformers_cache_dir)
 
 def download_from_huggingface(repo_id):
-    snapshot_download(repo_id=repo_id, cache_dir=os.environ['HF_HOME'], repo_type="model", force_download=True, token=st.secrets["TOKEN"])
+    snapshot_download(repo_id=repo_id, cache_dir=os.environ['HF_HOME'], repo_type="model", force_download=True, token=hf_token, max_workers=1)
 
 def download(file_id, output_path):
     gdown.download(f"https://drive.google.com/uc?id={file_id}", output_path, quiet=False)
