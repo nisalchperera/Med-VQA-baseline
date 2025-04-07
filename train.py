@@ -114,7 +114,7 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, sc
     print("Training completed!")
 
 # Main function to prepare everything and start training
-def main(train_dataset, val_dataset, num_epochs=10, batch_size=32, learning_rate=1e-4, device=None):
+def main(train_dataset, val_dataset, num_epochs=40, batch_size=32, learning_rate=1e-4, device=None):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu") if device is None else device
     # device = 'cpu'
     # DataLoaders

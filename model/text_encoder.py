@@ -6,15 +6,18 @@ from transformers import AutoModel
 import shutil
 import os
 
+cwd = os.getcwd()
+print(cwd)
+
 transformers_cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "huggingface", "transformers")
 if os.path.exists(transformers_cache_dir):
     shutil.rmtree(transformers_cache_dir)
 
 # Text Encoder (PubMedBERT)
 class TextEncoder(nn.Module):
-    def __init__(self, model_name="microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract", feat_dim=512):
+    def __init__(self, model_name="models/BioMedNLP", feat_dim=512):
         super(TextEncoder, self).__init__()
-        self.bert = AutoModel.from_pretrained(model_name)
+        self.bert = AutoModel.from_pretrained(os.path.join(cwd, model_name), local_files_only=True)
         self.text_feat = nn.Sequential(
             nn.Linear(768, feat_dim),
             nn.BatchNorm1d(feat_dim),  # BatchNorm requires batch size > 1

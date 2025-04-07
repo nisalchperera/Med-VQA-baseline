@@ -1,15 +1,22 @@
 import os
 
-os.environ['HF_HOME'] = os.path.join(os.getcwd(), "models")
-os.makedirs(os.environ['HF_HOME'], exist_ok=True)
+# os.environ['HF_HOME'] = os.path.join(os.getcwd(), "models/huggingface/")
+# os.makedirs(os.environ['HF_HOME'], exist_ok=True)
 
 import streamlit as st
 
-# Retrieve Hugging Face token from secrets
-hf_token = st.secrets["secrets"]["TOKEN"]
+# # Retrieve Hugging Face token from secrets
+# hf_token = st.secrets["secrets"]["TOKEN"]
 
-# Set the token as an environment variable (if needed)
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
+# # Set the token as an environment variable (if needed)
+# os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
+
+# transformers_cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "huggingface", "transformers")
+# if os.path.exists(transformers_cache_dir):
+#     shutil.rmtree(transformers_cache_dir)
+
+# from huggingface_hub import snapshot_download
+# snapshot_download(repo_id="microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract", cache_dir=os.environ['HF_HOME'], repo_type="model", force_download=True, token=hf_token, max_workers=1)
 
 import torch
 import torchvision.transforms as transforms
@@ -18,23 +25,14 @@ import json
 
 from PIL import Image
 from transformers import AutoTokenizer
-from huggingface_hub import snapshot_download
 
 from model import MedVQA
 
-# Clear transformers cache manually
-import shutil
-import os
+cwd = os.getcwd()
 
-transformers_cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "huggingface", "transformers")
-if os.path.exists(transformers_cache_dir):
-    shutil.rmtree(transformers_cache_dir)
-
-def download_from_huggingface(repo_id):
-    snapshot_download(repo_id=repo_id, cache_dir=os.environ['HF_HOME'], repo_type="model", force_download=True, token=hf_token, max_workers=1)
-
+@st.cache_resource
 def download(file_id, output_path):
-    gdown.download(f"https://drive.google.com/uc?id={file_id}", output_path, quiet=False)
+    gdown.download(f"https://drive.google.com/uc?id={file_id}", os.path.join(cwd, output_path), quiet=False)
 
 # Model loading with caching
 @st.cache_resource
@@ -52,15 +50,27 @@ with open('./label2ans.json') as f:
 # Downloading Models
 # https://drive.google.com/file/d/1-eqG2ULS-zTTOsgTScbFJYzhhnCQAYnh/view?usp=sharing
 # https://drive.google.com/file/d/1-eqG2ULS-zTTOsgTScbFJYzhhnCQAYnh/view?usp=sharing
-if not os.path.exists("models/medvqa_epoch_10.pth"):
+if not os.path.exists(os.path.join(cwd, "models/medvqa_epoch_10.pth")):
     os.makedirs("models", exist_ok=True)
-    download("1-eqG2ULS-zTTOsgTScbFJYzhhnCQAYnh", "./models/medvqa_epoch_10.pth")
+    download("1-eqG2ULS-zTTOsgTScbFJYzhhnCQAYnh", "models/medvqa_epoch_10.pth")
 
-download_from_huggingface("microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract")
+if not os.path.exists("models/BioMedNLP"):
+    os.makedirs("models/BioMedNLP", exist_ok=True)
+    # config.json https://drive.google.com/file/d/1saOo04pZt1FMX7EJ3ZVo7ynQL7e0cl74/view?usp=sharing
+    # flax_model.msgpack https://drive.google.com/file/d/1jH6KcuTN8VlkBQXoVpPMSJHvYQ0hbo4j/view?usp=sharing
+    # pytorch_model.bin https://drive.google.com/file/d/13HYBQ8lhOScq2vhi247JaCXjiRB1FNv9/view?usp=drive_link
+    # tokenizer_config.json https://drive.google.com/file/d/1xfOyNtmxne-wmPlIcGHIqQvrFNst8rjL/view?usp=drive_link
+    # vocab.txt https://drive.google.com/file/d/13Sl5V-c5mdm8KYDVAKFQdjF09F93SsKc/view?usp=drive_link
+
+    download("1saOo04pZt1FMX7EJ3ZVo7ynQL7e0cl74", "models/BioMedNLP/config.json")
+    download("1jH6KcuTN8VlkBQXoVpPMSJHvYQ0hbo4j", "models/BioMedNLP/flax_model.msgpack")
+    download("13HYBQ8lhOScq2vhi247JaCXjiRB1FNv9", "models/BioMedNLP/pytorch_model.bin")
+    download("1xfOyNtmxne-wmPlIcGHIqQvrFNst8rjL", "models/BioMedNLP/tokenizer_config.json")
+    download("13Sl5V-c5mdm8KYDVAKFQdjF09F93SsKc", "models/BioMedNLP/vocab.txt")
 
 # Initialize components
 model, device = load_model()
-tokenizer = AutoTokenizer.from_pretrained("microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract")
+tokenizer = AutoTokenizer.from_pretrained(os.path.join(cwd, "models/BioMedNLP/"))
 
 def preprocess_question(question):
     inputs = tokenizer(question, return_tensors="pt", padding=True, truncation=True, max_length=512)
