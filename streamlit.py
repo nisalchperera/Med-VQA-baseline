@@ -11,7 +11,7 @@ import json
 
 from PIL import Image
 from transformers import AutoTokenizer
-from huggingface_hub import hf_hub_download
+from huggingface_hub import snapshot_download
 
 from model import MedVQA
 
@@ -23,7 +23,11 @@ transformers_cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "huggin
 if os.path.exists(transformers_cache_dir):
     shutil.rmtree(transformers_cache_dir)
 
-@st.cache_data
+@st.cache_resource
+def download_from_huggingface(repo_id):
+    snapshot_download(repo_id=repo_id, cache_dir=os.environ['HF_HOME'], repo_type="model", force_download=True)
+
+@st.cache_resource
 def download(file_id, output_path):
     gdown.download(f"https://drive.google.com/uc?id={file_id}", output_path, quiet=False)
 
@@ -46,6 +50,8 @@ with open('./label2ans.json') as f:
 if not os.path.exists("models/medvqa_epoch_10.pth"):
     os.makedirs("models", exist_ok=True)
     download("1-eqG2ULS-zTTOsgTScbFJYzhhnCQAYnh", "./models/medvqa_epoch_10.pth")
+
+download_from_huggingface("microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract")
 
 # Initialize components
 model, device = load_model()
